@@ -193,14 +193,19 @@ class Course {
 }
 
 List<String> teachers = [
-  'Dr. Smith',
-  'Prof. Johnson',
-  'Ms. Lee',
-  'Mr. Davis',
+  'Sir Nauman',
+  'Sir Nabeel',
+  'Sir Zulqarnain',
+
 ];
 
 List<String> semesters = [
-  'Fall 2023',
-  'Spring 2024',
-  'Summer 2024',
+  'Semester 1',
+  'Semester 2',
+  'Semester 3',
+  'Semester 4',
+  'Semester 5',
+  'Semester 6',
+  'Semester 7',
+  'Semester 8',
 ];
