@@ -41,27 +41,25 @@ class IntegratedDashboard extends StatelessWidget {
               ),
             ),
             Row(
-  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  children: [
-    DashboardCard(
-      title: 'Total Teachers',
-      value: '100',
-      color: Colors.orange,
-    ),
-    DashboardCard(
-      title: 'Total Courses',
-      value: '50',
-      color: Colors.blue,
-    ),
-    DashboardCard(
-      title: 'Total Students',
-      value: '5000',
-      color: Colors.green,
-    ),
-  ],
-),
-
-
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                DashboardCard(
+                  title: 'Total Teachers',
+                  value: '100',
+                  color: Colors.orange,
+                ),
+                DashboardCard(
+                  title: 'Total Courses',
+                  value: '50',
+                  color: Colors.blue,
+                ),
+                DashboardCard(
+                  title: 'Total Students',
+                  value: '5000',
+                  color: Colors.green,
+                ),
+              ],
+            ),
             const SizedBox(height: 20),
             const Padding(
               padding: EdgeInsets.only(bottom: 16.0),
@@ -117,7 +115,6 @@ class DashboardCard extends StatelessWidget {
   final String value;
   final Color color;
 
-  // Use a factory constructor
   const DashboardCard({
     Key? key,
     required this.title,
@@ -158,8 +155,8 @@ class ProjectDashboard extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: const [
-        SummaryCard(), // Made it const
-        ProjectList(), // Removed Expanded here
+        SummaryCard(),
+        ProjectList(),
       ],
     );
   }
@@ -182,32 +179,9 @@ class SummaryCard extends StatelessWidget {
               style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 16.0),
-            
-
           ],
         ),
       ),
-    );
-  }
-}
-
-class SummaryItem extends StatelessWidget {
-  final String label;
-  final int count;
-
-  const SummaryItem({Key? key, required this.label, required this.count}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(
-          label,
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 4.0),
-        Text('$count projects'),
-      ],
     );
   }
 }
@@ -266,16 +240,149 @@ class Project {
   });
 }
 
-List<String> semesters = [
-  'Semester 1',
-  'Semester 2',
-  'Semester 3',
-  'Semester 4',
-  'Semester 5',
-  'Semester 6',
-  'Semester 7',
-  'Semester 8',
-];
+class StudentStudyManagementScreen extends StatefulWidget {
+  const StudentStudyManagementScreen({Key? key}) : super(key: key);
+
+  @override
+  _StudentStudyManagementScreenState createState() => _StudentStudyManagementScreenState();
+}
+
+
+class _StudentStudyManagementScreenState extends State<StudentStudyManagementScreen> {
+
+  final TextEditingController _studentNameController = TextEditingController();
+  final TextEditingController _cgpaController = TextEditingController();
+  final List<Student> _students = [
+    Student(name: 'Muhammad Saim Sajid', cgpa: '3.87'),
+    Student(name: 'Huzaifa Qureshi', cgpa: '3.3'),
+    Student(name: 'Shoaib Ahmed', cgpa: '3.6'),
+    Student(name: 'Mudassir Khan', cgpa: '3.5'),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Student Study Management'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'List of Students',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(
+              height: 200, // Adjust the height according to your UI requirements
+              child: ListView.builder(
+                itemCount: _students.length,
+                itemBuilder: (context, index) {
+                  final student = _students[index];
+                  return ListTile(
+                    title: Text(student.name),
+                    subtitle: Text(student.cgpa.isNotEmpty ? student.cgpa : 'No CGPA'),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _showAddStudentForm(context),
+        child: Icon(Icons.add),
+      ),
+    );
+  }
+
+  void _showAddStudentForm(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Add Student'),
+          content: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: _studentNameController,
+                  decoration: const InputDecoration(
+                    labelText: 'Student Name',
+                  ),
+                ),
+                TextField(
+                  controller: _cgpaController,
+                  decoration: const InputDecoration(
+                    labelText: 'CGPA',
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                _addStudent();
+                Navigator.of(context).pop();
+              },
+              child: const Text('Add'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _addStudent() {
+    final studentName = _studentNameController.text.trim();
+    final cgpa = _cgpaController.text.trim();
+
+    if (studentName.isNotEmpty && cgpa.isNotEmpty) {
+      final newStudent = Student(
+        name: studentName,
+        cgpa: cgpa,
+      );
+
+      setState(() {
+        _students.add(newStudent);
+        _clearFields();
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Student added successfully')),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill all fields')),
+      );
+    }
+  }
+
+  void _clearFields() {
+    _studentNameController.clear();
+    _cgpaController.clear();
+  }
+}
+
+class Student {
+  final String name;
+  final String cgpa;
+
+  Student({
+    required this.name,
+    required this.cgpa,
+  });
+}
 
 class TeacherStudyManagementScreen extends StatefulWidget {
   const TeacherStudyManagementScreen({Key? key}) : super(key: key);
@@ -285,11 +392,15 @@ class TeacherStudyManagementScreen extends StatefulWidget {
 }
 
 class TeacherStudyManagementScreenState extends State<TeacherStudyManagementScreen> {
-  final List<Course> _courses = [];
-  final TextEditingController _courseNameController = TextEditingController();
-  final TextEditingController _creditsController = TextEditingController();
-  final TextEditingController _scheduleController = TextEditingController();
-  String? selectedSemester;
+  final List<Teacher> _teachers = [
+    Teacher(name: 'Dr Nauman', subject: 'Mobile Application Development'),
+    Teacher(name: 'Rao Zulqarnain', subject: 'Software Quality Engineering'),
+    Teacher(name: 'Nabeel Sarvar', subject: 'Aritficial Intelligence'),
+    Teacher(name: 'Hafiz Utaullah', subject: 'Formal Methods'),
+  ];
+
+  final TextEditingController _teacherNameController = TextEditingController();
+  final TextEditingController _subjectController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -300,55 +411,21 @@ class TeacherStudyManagementScreenState extends State<TeacherStudyManagementScre
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TextField(
-              controller: _courseNameController,
-              decoration: const InputDecoration(
-                labelText: 'Course Name',
-              ),
-            ),
-            TextField(
-              controller: _creditsController,
-              decoration: const InputDecoration(
-                labelText: 'Credits',
-              ),
-            ),
-            TextField(
-              controller: _scheduleController,
-              decoration: const InputDecoration(
-                labelText: 'Schedule',
-              ),
-            ),
-            const SizedBox(height: 16.0),
-            DropdownButton<String?>(
-              value: selectedSemester,
-              onChanged: (newValue) {
-                setState(() {
-                  selectedSemester = newValue;
-                });
-              },
-              items: semesters.map((semester) {
-                return DropdownMenuItem<String?>(
-                  value: semester,
-                  child: Text(semester),
-                );
-              }).toList(),
-            ),
-            ElevatedButton(
-              onPressed: _addCourse,
-              child: const Text('Add'),
+            const Text(
+              'List of Teachers',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             SizedBox(
               height: 200, // Adjust the height according to your UI requirements
               child: ListView.builder(
-                itemCount: _courses.length,
+                itemCount: _teachers.length,
                 itemBuilder: (context, index) {
-                  final course = _courses[index];
+                  final teacher = _teachers[index];
                   return ListTile(
-                    title: Text(course.name),
-                    subtitle: Text('${course.credits} credits'),
-                    trailing: Text(course.schedule),
-                    onTap: () {},
+                    title: Text(teacher.name),
+                    subtitle: Text(teacher.subject.isNotEmpty ? teacher.subject : 'No subject'),
                   );
                 },
               ),
@@ -356,29 +433,75 @@ class TeacherStudyManagementScreenState extends State<TeacherStudyManagementScre
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _showAddTeacherForm,
+        child: Icon(Icons.add),
+      ),
     );
   }
 
-  void _addCourse() async {
-    final courseName = _courseNameController.text.trim();
-    final credits = _creditsController.text.trim();
-    final schedule = _scheduleController.text.trim();
+  void _showAddTeacherForm() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Add Teacher'),
+          content: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: _teacherNameController,
+                  decoration: const InputDecoration(
+                    labelText: 'Teacher Name',
+                  ),
+                ),
+                TextField(
+                  controller: _subjectController,
+                  decoration: const InputDecoration(
+                    labelText: 'Subject',
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: _addTeacher,
+              child: const Text('Add'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
-    if (courseName.isNotEmpty && credits.isNotEmpty && schedule.isNotEmpty) {
-      final newCourse = Course(
-        name: courseName,
-        instructor: 'Sir Nauman', // Assuming the teacher's name is fixed
-        credits: credits,
-        schedule: schedule,
+  void _addTeacher() {
+    final teacherName = _teacherNameController.text.trim();
+    final subject = _subjectController.text.trim();
+
+    if (teacherName.isNotEmpty && subject.isNotEmpty) {
+      final newTeacher = Teacher(
+        name: teacherName,
+        subject: subject,
       );
 
       setState(() {
-        _courses.add(newCourse);
+        _teachers.add(newTeacher);
         _clearFields();
       });
 
+      Navigator.of(context).pop(); // Close the dialog
+
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Course added successfully')),
+        const SnackBar(content: Text('Teacher added successfully')),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -388,38 +511,17 @@ class TeacherStudyManagementScreenState extends State<TeacherStudyManagementScre
   }
 
   void _clearFields() {
-    _courseNameController.clear();
-    _creditsController.clear();
-    _scheduleController.clear();
+    _teacherNameController.clear();
+    _subjectController.clear();
   }
 }
 
-class Course {
+class Teacher {
   final String name;
-  final String instructor;
-  final String credits;
-  final String schedule;
+  final String subject;
 
-  Course({
+  Teacher({
     required this.name,
-    required this.instructor,
-    required this.credits,
-    required this.schedule,
+    required this.subject,
   });
-}
-
-class StudentStudyManagementScreen extends StatelessWidget {
-  const StudentStudyManagementScreen({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Student Study Management'),
-      ),
-      body: const Center(
-        child: Text('Student Study Management Screen'),
-      ),
-    );
-  }
 }
