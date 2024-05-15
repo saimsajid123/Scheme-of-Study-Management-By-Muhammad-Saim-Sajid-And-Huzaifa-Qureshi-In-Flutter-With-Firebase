@@ -14,7 +14,85 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: IntegratedDashboard(),
+      home: LoginScreen(),
+    );
+  }
+}
+
+class AuthService {
+  // Hardcoded authentication for demonstration
+  Future<void> signIn(String email, String password) async {
+    if (email == 'admin@gmail.com' && password == 'admin') {
+      // Authentication successful
+      print('Logged in: $email');
+    } else {
+      // Authentication failed
+      throw Exception('Invalid email or password');
+    }
+  }
+}
+
+class LoginScreen extends StatelessWidget {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Login'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            TextField(
+              controller: emailController,
+              decoration: InputDecoration(labelText: 'Email'),
+            ),
+            TextField(
+              controller: passwordController,
+              obscureText: true,
+              decoration: InputDecoration(labelText: 'Password'),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                // Hardcoded email and password for demonstration
+                final String email = emailController.text;
+                final String password = passwordController.text;
+
+                // Authenticate the user with the provided email and password
+                AuthService().signIn(email, password)
+                    .then((_) {
+                  // If authentication is successful, navigate to the dashboard
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => IntegratedDashboard()),
+                  );
+                })
+                    .catchError((error) {
+                  // If authentication fails, show an error message
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Authentication failed')),
+                  );
+                });
+              },
+              child: Text('Login'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => RegisterScreen()),
+                );
+              },
+              child: Text('Register'),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -247,9 +325,7 @@ class StudentStudyManagementScreen extends StatefulWidget {
   _StudentStudyManagementScreenState createState() => _StudentStudyManagementScreenState();
 }
 
-
 class _StudentStudyManagementScreenState extends State<StudentStudyManagementScreen> {
-
   final TextEditingController _studentNameController = TextEditingController();
   final TextEditingController _cgpaController = TextEditingController();
   final List<Student> _students = [
@@ -524,4 +600,42 @@ class Teacher {
     required this.name,
     required this.subject,
   });
+}
+
+class RegisterScreen extends StatelessWidget {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Register'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            TextField(
+              controller: emailController,
+              decoration: InputDecoration(labelText: 'Email'),
+            ),
+            TextField(
+              controller: passwordController,
+              obscureText: true,
+              decoration: InputDecoration(labelText: 'Password'),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                // Implement registration logic
+              },
+              child: Text('Register'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
