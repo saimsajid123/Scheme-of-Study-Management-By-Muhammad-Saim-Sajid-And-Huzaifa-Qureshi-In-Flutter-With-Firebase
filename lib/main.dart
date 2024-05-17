@@ -166,7 +166,7 @@ class IntegratedDashboard extends StatelessWidget {
                       ),
                     );
                   },
-                  child: const Text('Teacher'),
+                  child: const Text('Teacher and Courses'),
                 ),
                 ElevatedButton(
                   onPressed: () {
@@ -341,34 +341,42 @@ class _StudentStudyManagementScreenState extends State<StudentStudyManagementScr
       appBar: AppBar(
         title: const Text('Student Study Management'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'List of Students',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(
-              height: 200, // Adjust the height according to your UI requirements
-              child: ListView.builder(
-                itemCount: _students.length,
-                itemBuilder: (context, index) {
-                  final student = _students[index];
-                  return ListTile(
-                    title: Text(student.name),
-                    subtitle: Text(student.cgpa.isNotEmpty ? student.cgpa : 'No CGPA'),
-                  );
-                },
+      body: Center(
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey, width: 3),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          padding: const EdgeInsets.all(16.0),
+          width: 350,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'List of Students',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-            ),
-          ],
+              SizedBox(
+                height: 200,
+                child: ListView.builder(
+                  itemCount: _students.length,
+                  itemBuilder: (context, index) {
+                    final student = _students[index];
+                    return ListTile(
+                      title: Text(student.name),
+                      subtitle: Text(student.cgpa.isNotEmpty ? student.cgpa : 'No CGPA'),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddStudentForm(context),
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }
@@ -469,14 +477,16 @@ class TeacherStudyManagementScreen extends StatefulWidget {
 
 class TeacherStudyManagementScreenState extends State<TeacherStudyManagementScreen> {
   final List<Teacher> _teachers = [
-    Teacher(name: 'Dr Nauman', subject: 'Mobile Application Development'),
-    Teacher(name: 'Rao Zulqarnain', subject: 'Software Quality Engineering'),
-    Teacher(name: 'Nabeel Sarvar', subject: 'Aritficial Intelligence'),
-    Teacher(name: 'Hafiz Utaullah', subject: 'Formal Methods'),
+    Teacher(name: 'Dr Nauman', subject: 'Mobile Application Development', courseHour: '3', courseCode: 'CS101'),
+    Teacher(name: 'Rao Zulqarnain', subject: 'Software Quality Engineering', courseHour: '3', courseCode: 'CS102'),
+    Teacher(name: 'Nabeel Sarvar', subject: 'Artificial Intelligence', courseHour: '4', courseCode: 'CS103'),
+    Teacher(name: 'Hafiz Utaullah', subject: 'Formal Methods', courseHour: '3', courseCode: 'CS104'),
   ];
 
   final TextEditingController _teacherNameController = TextEditingController();
   final TextEditingController _subjectController = TextEditingController();
+  final TextEditingController _courseHourController = TextEditingController();
+  final TextEditingController _courseCodeController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -484,34 +494,42 @@ class TeacherStudyManagementScreenState extends State<TeacherStudyManagementScre
       appBar: AppBar(
         title: const Text('Teacher Study Management'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'List of Teachers',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(
-              height: 200, // Adjust the height according to your UI requirements
-              child: ListView.builder(
-                itemCount: _teachers.length,
-                itemBuilder: (context, index) {
-                  final teacher = _teachers[index];
-                  return ListTile(
-                    title: Text(teacher.name),
-                    subtitle: Text(teacher.subject.isNotEmpty ? teacher.subject : 'No subject'),
-                  );
-                },
+      body: Center(
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey, width: 3),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          padding: const EdgeInsets.all(16.0),
+          width: 350,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'List of Teachers',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-            ),
-          ],
+              SizedBox(
+                height: 200, // Adjust the height according to your UI requirements
+                child: ListView.builder(
+                  itemCount: _teachers.length,
+                  itemBuilder: (context, index) {
+                    final teacher = _teachers[index];
+                    return ListTile(
+                      title: Text(teacher.name),
+                      subtitle: Text('${teacher.subject}, Course Hour: ${teacher.courseHour}, Course Code: ${teacher.courseCode}'),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _showAddTeacherForm,
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }
@@ -539,6 +557,18 @@ class TeacherStudyManagementScreenState extends State<TeacherStudyManagementScre
                     labelText: 'Subject',
                   ),
                 ),
+                TextField(
+                  controller: _courseHourController,
+                  decoration: const InputDecoration(
+                    labelText: 'Credit Hour',
+                  ),
+                ),
+                TextField(
+                  controller: _courseCodeController,
+                  decoration: const InputDecoration(
+                    labelText: 'Course Code',
+                  ),
+                ),
               ],
             ),
           ),
@@ -562,11 +592,15 @@ class TeacherStudyManagementScreenState extends State<TeacherStudyManagementScre
   void _addTeacher() {
     final teacherName = _teacherNameController.text.trim();
     final subject = _subjectController.text.trim();
+    final courseHour = _courseHourController.text.trim();
+    final courseCode = _courseCodeController.text.trim();
 
-    if (teacherName.isNotEmpty && subject.isNotEmpty) {
+    if (teacherName.isNotEmpty && subject.isNotEmpty && courseHour.isNotEmpty && courseCode.isNotEmpty) {
       final newTeacher = Teacher(
         name: teacherName,
         subject: subject,
+        courseHour: courseHour,
+        courseCode: courseCode,
       );
 
       setState(() {
@@ -589,16 +623,22 @@ class TeacherStudyManagementScreenState extends State<TeacherStudyManagementScre
   void _clearFields() {
     _teacherNameController.clear();
     _subjectController.clear();
+    _courseHourController.clear();
+    _courseCodeController.clear();
   }
 }
 
 class Teacher {
   final String name;
   final String subject;
+  final String courseHour;
+  final String courseCode;
 
   Teacher({
     required this.name,
     required this.subject,
+    required this.courseHour,
+    required this.courseCode,
   });
 }
 
