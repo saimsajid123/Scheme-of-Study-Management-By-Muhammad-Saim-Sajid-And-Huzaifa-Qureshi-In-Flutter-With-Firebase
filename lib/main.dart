@@ -1,4 +1,6 @@
-
+//this is a project,i made with my fellow huzaifa,its a scheme of study management app that manages the teacher with courses and students,it uses firebase to autheticate the login
+//i have provided my api
+//run flutter pubget to get all the depencies required 
 import 'package:flutter/material.dart';
 import 'package:scheme_of_study_management/screens/login_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
