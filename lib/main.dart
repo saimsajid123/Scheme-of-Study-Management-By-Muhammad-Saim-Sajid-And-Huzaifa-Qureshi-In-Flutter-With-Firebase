@@ -1,6 +1,13 @@
+//Name: Muhammad Saim Sajid
+//Roll No: F21BSEEN1E02025
+//Section: 6TH E1
+//Name: Huzaifa Qureshi
+//Roll No: F21BSEEN1E02022
+//Section: 6THE1
+
 //this is a project,i made with my fellow huzaifa,its a scheme of study management app that manages the teacher with courses and students,it uses firebase to autheticate the login
-//i have provided my api
-//run flutter pubget to get all the depencies required 
+// we have my given own api here so you can use that,if that does not work then you can set up your project on fireabase console and then use your own api
+//run "flutter pubget" to get all the depencies required 
 import 'package:flutter/material.dart';
 import 'package:scheme_of_study_management/screens/login_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
