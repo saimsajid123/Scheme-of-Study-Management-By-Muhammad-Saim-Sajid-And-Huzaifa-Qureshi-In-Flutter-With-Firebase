@@ -9,6 +9,7 @@
 // we have my given own api here so you can use that,if that does not work then you can set up your project on fireabase console and then use your own api
 //run "flutter pubget" to get all the depencies required 
 //Note:Instead of importing all the files in main.dart,all of the files are interconnected like if main.dart is importing login_screen.dart then login.screen will import some other file which links all of these files with each other and work togeather
+//in order to run the project,run "flutter pub get" after dependcies has been installed,restart the project and then run it
 import 'package:flutter/material.dart';
 import 'package:scheme_of_study_management/screens/login_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
